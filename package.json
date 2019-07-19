@@ -1,0 +1,19 @@
+{
+  "name": "chatql-server",
+  "version": "1.0.0",
+  "description": "chatql server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yossef Nassar",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.7.0",
+    "apollo-server-express": "^2.7.0",
+    "graphql": "^14.4.2",
+    "graphql-subscriptions": "^1.1.0",
+    "subscriptions-transport-ws": "^0.9.16"
+  }
+}

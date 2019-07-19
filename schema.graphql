@@ -1,0 +1,46 @@
+  scalar Date
+
+  input CreateUserInput {
+    id: Int!
+    username: String!
+    firstname: String
+    lastName: String
+    age: Float
+  }
+
+  type User {
+    id: ID!
+    username: String!
+    firstname: String
+    lastName: String
+    age: Float
+    channels: [Channel]
+    messages: [Message]
+  }
+
+  type Message {
+      id: ID!
+      text: String
+      owner: User
+      createdAt: Date
+      updateAt: Date
+  }
+
+  type Channel {
+      id: ID!
+      name: String
+      createdAt: Date
+      users: [User]!
+  }
+
+  type Query {
+    user(id: Int): User
+  }
+
+  type Mutation {
+    createUser(input: CreateUserInput) : User
+  }
+
+type Subscription {
+  onCreateUser: User
+}
