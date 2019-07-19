@@ -19,18 +19,18 @@ type User {
 }
 
 type Message {
-    id: ID!
-    text: String
-    owner: User
-    createdAt: Date
-    updateAt: Date
+  id: ID!
+  text: String
+  owner: User
+  createdAt: Date
+  updateAt: Date
 }
 
 type Channel {
-    id: ID!
-    name: String
-    createdAt: Date
-    users: [User]!
+  id: ID!
+  name: String
+  createdAt: Date
+  users: [User]!
 }
 
 type Query {
