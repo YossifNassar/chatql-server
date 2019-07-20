@@ -25,6 +25,9 @@ class ResolversProvider {
                 createChannel: (parent, args, context, info) => {
                     return this.channelsDAO.createChannel(args.input)
                 },
+                addUserToChannel: (parent, args, context, info) => {
+                    return this.channelsDAO.addUserToChannel(args.channelName, args.userId)
+                },
             },
             Subscription: {
                 onCreateUser: {
@@ -38,6 +41,15 @@ class ResolversProvider {
                         () => this.pubsub.asyncIterator('createMessage'),
                         (payload, variables) => {
                             return payload.channelId === variables.channelId;
+                        }
+                    )
+                },
+                onAddUserToChannel: {
+                    subscribe: withFilter(
+                        () => this.pubsub.asyncIterator('addUserToChannel'),
+                        (payload, variables) => {
+                            return payload.channelName === variables.channelName || 
+                                    payload.userId === variables.userId;
                         }
                     )
                 }

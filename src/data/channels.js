@@ -9,7 +9,7 @@ var channels = [{
         firstname: "Yossef",
         lastName: "Nassar",
         username: "ynassar",
-        age: 27.2,
+        age: 27.2
     }],
     messages: []
 },
@@ -71,6 +71,23 @@ class ChannelsDAO {
         channels.push(channel)
         this.pubsub.publish('createChannel', { onCreateChannel: channel });
         return channel
+    }
+
+    addUserToChannel(channelName, userId) {
+        const user = this.usersDAO.getUserById(userId)
+        if(!user) {
+            return new Error(`no user found matching id ${userId}`)
+        }
+        var channel = channels.find(ch => ch.name === channelName)
+        if(!channel) {
+            return new Error(`no channel found matching name ${channelName}`)
+        }
+        if(channel.users.find(u => u.id === user.id)) {
+            return new Error("user already in channel")
+        }
+        channel.users.push(user)
+        this.pubsub.publish('addUserToChannel', { onAddUserToChannel: user, userId: user.id, channelName: channelName });
+        return user 
     }
 }
 

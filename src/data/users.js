@@ -3,7 +3,7 @@ var users = [{
     firstname: "Yossef",
     lastName: "Nassar",
     username: "ynassar",
-    age: 27.2,
+    age: 27.2
 }]
 
 
