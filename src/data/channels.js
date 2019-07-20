@@ -89,6 +89,13 @@ class ChannelsDAO {
         this.pubsub.publish('addUserToChannel', { onAddUserToChannel: user, userId: user.id, channelName: channelName });
         return user 
     }
+
+    getUserChannels(user) {
+        return channels.filter(channel => {
+            const ch = channel.users.find(u => u.id === user.id)
+            return ch != null
+        })
+    }
 }
 
 export { ChannelsDAO }

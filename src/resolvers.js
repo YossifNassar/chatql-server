@@ -56,10 +56,7 @@ class ResolversProvider {
             },
             User: {
                 channels: (user) => {
-                    return channels.filter(channel => {
-                        const ch = channel.users.find(u => u.id === user.id)
-                        return ch != null
-                    })
+                    return this.channelsDAO.getUserChannels(user)
                 }
             }
         }
