@@ -73,20 +73,20 @@ class ChannelsDAO {
         return channel
     }
 
-    addUserToChannel(channelName, userId) {
+    addUserToChannel(channelId, userId) {
         const user = this.usersDAO.getUserById(userId)
         if(!user) {
             return new Error(`no user found matching id ${userId}`)
         }
-        var channel = channels.find(ch => ch.name === channelName)
+        var channel = channels.find(ch => ch.id === channelId)
         if(!channel) {
-            return new Error(`no channel found matching name ${channelName}`)
+            return new Error(`no channel found matching id ${channelId}`)
         }
         if(channel.users.find(u => u.id === user.id)) {
             return new Error("user already in channel")
         }
         channel.users.push(user)
-        this.pubsub.publish('addUserToChannel', { onAddUserToChannel: user, userId: user.id, channelName: channelName });
+        this.pubsub.publish('addUserToChannel', { onAddUserToChannel: user, userId: user.id, channelId: channelId });
         return user 
     }
 

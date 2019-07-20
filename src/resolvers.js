@@ -26,7 +26,7 @@ class ResolversProvider {
                     return this.channelsDAO.createChannel(args.input)
                 },
                 addUserToChannel: (parent, args, context, info) => {
-                    return this.channelsDAO.addUserToChannel(args.channelName, args.userId)
+                    return this.channelsDAO.addUserToChannel(args.channelId, args.userId)
                 },
             },
             Subscription: {
@@ -48,7 +48,7 @@ class ResolversProvider {
                     subscribe: withFilter(
                         () => this.pubsub.asyncIterator('addUserToChannel'),
                         (payload, variables) => {
-                            return payload.channelName === variables.channelName || 
+                            return payload.channelId === variables.channelId || 
                                     payload.userId === variables.userId;
                         }
                     )

@@ -52,12 +52,12 @@ type Mutation {
   createUser(input: CreateUserInput!): User
   createMessage(input: CreateMessageInput!): Message
   createChannel(input: CreateChannelInput!): Channel
-  addUserToChannel(userId: ID!, channelName: String!): User
+  addUserToChannel(userId: ID!, channelId: ID!): User
 }
 
 type Subscription {
   onCreateUser: User
   onCreateMessage(channelId: ID!): Message
   onCreateChannel: Channel
-  onAddUserToChannel(channelName: String): User
+  onAddUserToChannel(channelId: ID!): User
 }
