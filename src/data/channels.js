@@ -54,6 +54,24 @@ class ChannelsDAO {
         this.pubsub.publish('createMessage', { onCreateMessage: message, channelId: input.channelId });
         return message
     }
+
+    createChannel(input) {
+        if (channels.find(c => c.name === input.name)) {
+            return new Error(`channel with name ${input.name} already exists!`)
+        }
+
+        const channel = {
+            id: uuidv1(),
+            name: input.name,
+            createdAt: Date.now(),
+            users: [],
+            messages: []
+        }
+
+        channels.push(channel)
+        this.pubsub.publish('createChannel', { onCreateChannel: channel });
+        return channel
+    }
 }
 
 export { ChannelsDAO }

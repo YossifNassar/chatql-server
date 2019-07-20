@@ -21,11 +21,17 @@ class ResolversProvider {
                 createMessage: (parent, args, context, info) => {
                     const input = args.input
                     return this.channelsDAO.createMessage(input)
-                }
+                },
+                createChannel: (parent, args, context, info) => {
+                    return this.channelsDAO.createChannel(args.input)
+                },
             },
             Subscription: {
                 onCreateUser: {
                     subscribe: () => this.pubsub.asyncIterator('createUser')
+                },
+                onCreateChannel: {
+                    subscribe: () => this.pubsub.asyncIterator('createChannel')
                 },
                 onCreateMessage: {
                     subscribe: withFilter(

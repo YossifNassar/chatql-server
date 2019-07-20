@@ -1,5 +1,9 @@
 scalar Date
 
+input CreateChannelInput {
+  name: String!
+}
+
 input CreateUserInput {
   id: Int!
   username: String!
@@ -34,7 +38,7 @@ type Message {
 
 type Channel {
   id: ID!
-  name: String
+  name: String!
   createdAt: Date
   users: [User]!
   messages: [Message]
@@ -47,9 +51,11 @@ type Query {
 type Mutation {
   createUser(input: CreateUserInput!): User
   createMessage(input: CreateMessageInput!): Message
+  createChannel(input: CreateChannelInput!): Channel
 }
 
 type Subscription {
   onCreateUser: User
   onCreateMessage(channelId: ID!): Message
+  onCreateChannel: Channel
 }
