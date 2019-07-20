@@ -1,4 +1,4 @@
-import  { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer, gql } from 'apollo-server-express';
 import fs from 'fs';
 import express from 'express';
 import { createServer } from 'http';
