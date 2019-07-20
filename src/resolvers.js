@@ -70,6 +70,10 @@ const resolvers = {
             if (!channel) {
                 return new Error(`no channel found matching id ${input.channelId}`)
             }
+            if(!channel.users.find(u => u.id === user.id)) {
+                return new Error(`user with id ${user.id} is not authorized to send messages`+
+                ` in channel with id ${channel.id}`)
+            }
             const message = {
                 id: generatedId,
                 text: input.text,
