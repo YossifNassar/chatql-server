@@ -4,7 +4,6 @@ var users = [{
     lastName: "Nassar",
     username: "ynassar",
     age: 27.2,
-    messages: []
 }]
 
 
@@ -24,8 +23,7 @@ class UsersDAO {
             lastName: input.lastName,
             username: input.username,
             age: input.age,
-            channels: [],
-            messages: []
+            channels: []
         }
         users.push(user)
         this.pubsub.publish('createUser', { onCreateUser: user });
@@ -42,4 +40,4 @@ class UsersDAO {
     }
 }
 
-export {UsersDAO ,users}
+export { UsersDAO }

@@ -1,25 +1,10 @@
 import { PubSub, withFilter } from 'apollo-server';
-import uuidv1 from 'uuid/v1'
-import { UsersDAO, users } from './data/users.js'
-
-var channels = [{
-    id: "aaa111",
-    name: "friends",
-    createdAt: 1234556,
-    users: users,
-    messages: []
-},
-{
-    id: "aaa22",
-    name: "friends",
-    createdAt: 1234556,
-    users: [],
-    messages: []
-}]
-
+import { UsersDAO } from './data/users'
+import { ChannelsDAO } from './data/channels'
 
 const pubsub = new PubSub();
 const usersDAO = new UsersDAO(pubsub)
+const channelsDAO = new ChannelsDAO(pubsub, usersDAO)
 
 const resolvers = {
     Query: {
@@ -33,32 +18,7 @@ const resolvers = {
         },
         createMessage: (parent, args, context, info) => {
             const input = args.input
-            const generatedId = uuidv1();
-            const date = Date.now();
-            const user = usersDAO.getUserById(input.userId)
-            if (!user) {
-                return new Error(`no user found matching id ${input.userId}`)
-            }
-            const channel = channels.find(c => c.id === input.channelId)
-            if (!channel) {
-                return new Error(`no channel found matching id ${input.channelId}`)
-            }
-            if (!channel.users.find(u => u.id === user.id)) {
-                return new Error(`user with id ${user.id} is not authorized to send messages` +
-                    ` in channel with id ${channel.id}`)
-            }
-            const message = {
-                id: generatedId,
-                text: input.text,
-                owner: user,
-                channel: channel,
-                createdAt: date,
-                updateAt: date
-            }
-            user.messages.push(message)
-            channel.messages.push(message)
-            pubsub.publish('createMessage', { onCreateMessage: message, channelId: input.channelId });
-            return message
+            return channelsDAO.createMessage(input)
         }
     },
     Subscription: {

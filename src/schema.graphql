@@ -21,7 +21,6 @@ type User {
   lastName: String
   age: Float
   channels: [Channel]
-  messages: [Message]
 }
 
 type Message {
