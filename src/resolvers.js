@@ -1,14 +1,6 @@
 import { PubSub, withFilter } from 'apollo-server';
 import uuidv1 from 'uuid/v1'
-
-var users = [{
-    id: "y7",
-    firstname: "Yossef",
-    lastName: "Nassar",
-    username: "ynassar",
-    age: 27.2,
-    messages: []
-}]
+import { UsersDAO, users } from './data/users.js'
 
 var channels = [{
     id: "aaa111",
@@ -25,44 +17,25 @@ var channels = [{
     messages: []
 }]
 
+
 const pubsub = new PubSub();
+const usersDAO = new UsersDAO(pubsub)
 
 const resolvers = {
     Query: {
         user: (parent, args, context, info) => {
-            console.log(`looking for user with id ${args.id}`)
-            const user = users.find(user => user.id === args.id)
-            if (!user) {
-                throw new Error(`no user found matching id ${args.id}`)
-            }
-            return user
+            return usersDAO.getUserById(args.id)
         },
     },
     Mutation: {
         createUser: (parent, args, context, info) => {
-            const found = users.find(u => u.id === args.input.id || u.username === args.input.username)
-            console.log(`args ${args}`)
-            if (found) {
-                return new Error(`user already exists with username or id`)
-            }
-            const user = {
-                id: args.input.id,
-                firstname: args.input.firstname,
-                lastName: args.input.lastName,
-                username: args.input.username,
-                age: args.input.age,
-                channels: [],
-                messages: []
-            }
-            users.push(user)
-            pubsub.publish('createUser', { onCreateUser: user });
-            return user
+            return usersDAO.createUser(args.input)
         },
         createMessage: (parent, args, context, info) => {
             const input = args.input
             const generatedId = uuidv1();
             const date = Date.now();
-            const user = users.find(u => u.id === input.userId)
+            const user = usersDAO.getUserById(input.userId)
             if (!user) {
                 return new Error(`no user found matching id ${input.userId}`)
             }
@@ -70,9 +43,9 @@ const resolvers = {
             if (!channel) {
                 return new Error(`no channel found matching id ${input.channelId}`)
             }
-            if(!channel.users.find(u => u.id === user.id)) {
-                return new Error(`user with id ${user.id} is not authorized to send messages`+
-                ` in channel with id ${channel.id}`)
+            if (!channel.users.find(u => u.id === user.id)) {
+                return new Error(`user with id ${user.id} is not authorized to send messages` +
+                    ` in channel with id ${channel.id}`)
             }
             const message = {
                 id: generatedId,
