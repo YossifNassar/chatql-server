@@ -48,8 +48,8 @@ class ResolversProvider {
                     subscribe: withFilter(
                         () => this.pubsub.asyncIterator('addUserToChannel'),
                         (payload, variables) => {
-                            return payload.channelId === variables.channelId || 
-                                    payload.userId === variables.userId;
+                            return payload.channelId === variables.channelId ||
+                                payload.userId === variables.userId;
                         }
                     )
                 }

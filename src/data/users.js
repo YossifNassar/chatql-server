@@ -1,11 +1,4 @@
-var users = [{
-    id: "y7",
-    firstname: "Yossef",
-    lastName: "Nassar",
-    username: "ynassar",
-    age: 27.2
-}]
-
+var users = []
 
 class UsersDAO {
     constructor(pubsub) {

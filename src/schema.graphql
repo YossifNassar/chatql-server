@@ -5,7 +5,7 @@ input CreateChannelInput {
 }
 
 input CreateUserInput {
-  id: Int!
+  id: ID!
   username: String!
   firstname: String
   lastName: String

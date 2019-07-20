@@ -1,25 +1,6 @@
 import uuidv1 from 'uuid/v1'
 
-var channels = [{
-    id: "aaa111",
-    name: "friends",
-    createdAt: 1234556,
-    users: [{
-        id: "y7",
-        firstname: "Yossef",
-        lastName: "Nassar",
-        username: "ynassar",
-        age: 27.2
-    }],
-    messages: []
-},
-{
-    id: "aaa22",
-    name: "friends",
-    createdAt: 1234556,
-    users: [],
-    messages: []
-}]
+var channels = []
 
 class ChannelsDAO {
     constructor(pubsub, usersDAO) {
@@ -71,19 +52,19 @@ class ChannelsDAO {
 
     addUserToChannel(channelId, userId) {
         const user = this.usersDAO.getUserById(userId)
-        if(!user) {
+        if (!user) {
             return new Error(`no user found matching id ${userId}`)
         }
         var channel = channels.find(ch => ch.id === channelId)
-        if(!channel) {
+        if (!channel) {
             return new Error(`no channel found matching id ${channelId}`)
         }
-        if(channel.users.find(u => u.id === user.id)) {
+        if (channel.users.find(u => u.id === user.id)) {
             return new Error("user already in channel")
         }
         channel.users.push(user)
         this.pubsub.publish('addUserToChannel', { onAddUserToChannel: user, userId: user.id, channelId: channelId });
-        return user 
+        return user
     }
 
     getUserChannels(user) {
