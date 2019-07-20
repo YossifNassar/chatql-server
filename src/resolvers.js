@@ -1,24 +1,28 @@
-import  { PubSub }  from 'apollo-server';
+import  { PubSub, withFilter }  from 'apollo-server';
+import uuidv1 from 'uuid/v1'
 
 var users = [{
-    id: 7,
+    id: "y7",
     firstname: "Yossef",
     lastName: "Nassar",
     username: "ynassar",
-    age: 27.2
+    age: 27.2,
+    messages: []
 }]
 
 var channels = [{
     id: "aaa111",
     name: "friends",
     createdAt: 1234556,
-    users: users
+    users: users,
+    messages: []
 },
 {
   id: "aaa22",
   name: "friends",
   createdAt: 1234556,
-  users: []
+  users: [],
+  messages: []
 }]
 
 const pubsub = new PubSub();
@@ -46,16 +50,51 @@ const resolvers = {
           firstname: args.input.firstname,
           lastName: args.input.lastName,
           username: args.input.username,
-          age: args.input.age
+          age: args.input.age,
+          channels: [],
+          messages: []
         }
-        pubsub.publish('createUser', { onCreateUser: user });
         users.push(user)
+        pubsub.publish('createUser', { onCreateUser: user });
         return user
+      },
+      createMessage: (parent, args, context, info) => {
+        const input = args.input
+        const generatedId = uuidv1();
+        const date = Date.now();
+        const user = users.find(u => u.id === input.userId)
+        if(!user) {
+            return new Error(`no user found matching id ${input.userId}`)
+        }
+        const channel = channels.find(c => c.id  === input.channelId)
+        if(!channel) {
+            return new Error(`no channel found matching id ${input.channelId}`)
+        }
+        const message = {
+            id: generatedId,
+            text: input.text,
+            owner: user,
+            channel: channel,
+            createdAt: date,
+            updateAt: date
+        }
+        user.messages.push(message)
+        channel.messages.push(message)
+        pubsub.publish('createMessage', { onCreateMessage: message, channelId: input.channelId });
+        return message
       }
     },
     Subscription: {
       onCreateUser: {
         subscribe: () => pubsub.asyncIterator('createUser')
+      }, 
+      onCreateMessage: {
+        subscribe: withFilter(
+            () => pubsub.asyncIterator('createMessage'),
+            (payload, variables) => {
+                return payload.channelId === variables.channelId;
+            }
+          )
       }
     },
     User: {

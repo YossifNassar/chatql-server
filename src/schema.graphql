@@ -8,6 +8,12 @@ input CreateUserInput {
   age: Float
 }
 
+input CreateMessageInput {
+  text: String!
+  userId: ID!
+  channelId: ID!
+}
+
 type User {
   id: ID!
   username: String!
@@ -22,6 +28,7 @@ type Message {
   id: ID!
   text: String
   owner: User
+  channel: Channel
   createdAt: Date
   updateAt: Date
 }
@@ -31,6 +38,7 @@ type Channel {
   name: String
   createdAt: Date
   users: [User]!
+  messages: [Message]
 }
 
 type Query {
@@ -38,9 +46,11 @@ type Query {
 }
 
 type Mutation {
-  createUser(input: CreateUserInput) : User
+  createUser(input: CreateUserInput!): User
+  createMessage(input: CreateMessageInput!): Message
 }
 
 type Subscription {
   onCreateUser: User
+  onCreateMessage(channelId: ID!): Message
 }
