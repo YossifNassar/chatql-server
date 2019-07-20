@@ -56,10 +56,6 @@ class ChannelsDAO {
     }
 
     createChannel(input) {
-        if (channels.find(c => c.name === input.name)) {
-            return new Error(`channel with name ${input.name} already exists!`)
-        }
-
         const channel = {
             id: uuidv1(),
             name: input.name,
